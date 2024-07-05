@@ -1,5 +1,6 @@
 import cv2 as cv
 import numpy as np
+import pip
 
 def daltonize(image, level, deficiency_type):
     
@@ -14,9 +15,9 @@ def daltonize(image, level, deficiency_type):
         "Protanomaly": np.array([[0, 2.0234, -2.5258],
                                   [0, 1, 0],
                                   [0, 0, 1]]),
-        "Tritanomaly": np.array([[0.967, 0.033, 0],
-                                  [0, 0.733, 0.267],
-                                  [0, 0.183, 0.817]])
+        "Tritanomaly": np.array([[1, 0, 0],
+                                  [0, 1, 0],
+                                  [-0.395913, 0.801109, 0]])
     }
 
     daltonization_matrix = daltonization_matrices.get(deficiency_type, None)
@@ -52,7 +53,7 @@ current_correction_type = "Deuteranomaly"
 window_name = 'Daltonization for Color Deficiency Correction'
 cv.namedWindow(window_name, cv.WINDOW_AUTOSIZE)
 
-cv.createTrackbar("Correction Level (%)", window_name, correction_level, 200, lambda x: x)
+cv.createTrackbar("Correction Level (%)", window_name, correction_level, 500, lambda x: x)
 cv.createTrackbar("Correction Type", window_name, 0, len(correction_types) - 1, lambda x: x)
 
 
