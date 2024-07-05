@@ -1,6 +1,6 @@
 import cv2 as cv
 import numpy as np
-import pip
+
 
 def daltonize(image, level, deficiency_type):
     
