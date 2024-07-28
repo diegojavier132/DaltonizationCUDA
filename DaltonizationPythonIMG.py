@@ -101,5 +101,5 @@ while True:
     if cv.waitKey(1) & 0xFF == ord('q'):
         break
 
-im.release()
+frame.release()
 cv.destroyAllWindows()
