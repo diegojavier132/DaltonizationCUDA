@@ -1,0 +1,198 @@
+Obtained from CMD. The order is from 1K to 8K
+
+D:\User\Desktop\School\CCPROG\Workspace\Python\CEPARCO\DaltonizationCUDA>nvprof python "Timing_versions/TimingPycuda.py"
+==25592== NVPROF is profiling process 25592, command: python Timing_versions/TimingPycuda.py
+[0]Execution Time: 0.03883289999794215
+[1]Execution Time: 0.03959699999541044
+[2]Execution Time: 0.03854659997159615
+[3]Execution Time: 0.03942129999632016
+[4]Execution Time: 0.04053830000339076
+[5]Execution Time: 0.03953670000191778
+[6]Execution Time: 0.0409794999868609
+[7]Execution Time: 0.03894100000616163
+[8]Execution Time: 0.03975110000465065
+[9]Execution Time: 0.04181869997410104
+Avg Execution Time: 0.03979630999383517
+==25592== Profiling application: python Timing_versions/TimingPycuda.py
+==25592== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   47.54%  52.639ms        13  4.0492ms     480ns  6.3575ms  [CUDA memcpy HtoD]
+                   44.32%  49.067ms        10  4.9067ms  4.5112ms  5.1482ms  [CUDA memcpy DtoH]
+                    8.14%  9.0163ms        10  901.63us  899.50us  904.55us  daltonize
+      API calls:   32.20%  79.222ms         1  79.222ms  79.222ms  79.222ms  cuCtxCreate
+                   27.87%  68.564ms        13  5.2742ms  28.100us  8.0791ms  cuMemcpyHtoD
+                   25.10%  61.762ms        10  6.1762ms  5.7582ms  6.3920ms  cuMemcpyDtoH
+                    7.34%  18.055ms         1  18.055ms  18.055ms  18.055ms  cuCtxDetach
+                    3.70%  9.0973ms        20  454.87us  172.60us  1.6596ms  cuMemFree
+                    2.54%  6.2614ms        20  313.07us  157.80us  1.0068ms  cuMemAlloc
+                    1.07%  2.6240ms         1  2.6240ms  2.6240ms  2.6240ms  cuModuleLoadDataEx
+                    0.15%  364.50us        10  36.450us  28.600us  86.300us  cuLaunchKernel
+                    0.02%  45.900us         1  45.900us  45.900us  45.900us  cuModuleUnload
+                    0.01%  13.400us        10  1.3400us  1.2000us  1.6000us  cuFuncSetBlockShape
+                    0.00%  5.3000us         2  2.6500us  2.0000us  3.3000us  cuCtxPopCurrent
+                    0.00%  4.0000us         1  4.0000us  4.0000us  4.0000us  cuModuleGetFunction
+                    0.00%  3.9000us         2  1.9500us  1.7000us  2.2000us  cuCtxGetDevice
+                    0.00%  3.6000us         3  1.2000us     100ns  2.7000us  cuDeviceGetCount
+                    0.00%  2.0000us         3     666ns     300ns  1.4000us  cuModuleGetGlobal
+                    0.00%  1.9000us         2     950ns     500ns  1.4000us  cuDeviceGet
+                    0.00%  1.9000us         2     950ns     100ns  1.8000us  cuCtxPushCurrent
+                    0.00%     900ns         3     300ns     100ns     600ns  cuDeviceGetAttribute
+                    0.00%     800ns         1     800ns     800ns     800ns  cuDeviceComputeCapability
+
+D:\User\Desktop\School\CCPROG\Workspace\Python\CEPARCO\DaltonizationCUDA>nvprof python "Timing_versions/TimingPycuda.py"
+==31808== NVPROF is profiling process 31808, command: python Timing_versions/TimingPycuda.py
+[0]Execution Time: 0.07405280001694337
+[1]Execution Time: 0.07455389999086037
+[2]Execution Time: 0.07708459999412298
+[3]Execution Time: 0.06913030002033338
+[4]Execution Time: 0.07526959996903315
+[5]Execution Time: 0.07746589998714626
+[6]Execution Time: 0.07929219998186454
+[7]Execution Time: 0.08720459998585284
+[8]Execution Time: 0.08256000000983477
+[9]Execution Time: 0.07888159999856725
+Avg Execution Time: 0.0775495499954559
+==31808== Profiling application: python Timing_versions/TimingPycuda.py
+==31808== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   46.33%  93.972ms        13  7.2286ms     480ns  10.225ms  [CUDA memcpy HtoD]
+                   45.81%  92.931ms        10  9.2931ms  8.9150ms  10.155ms  [CUDA memcpy DtoH]
+                    7.86%  15.951ms        10  1.5951ms  1.5911ms  1.5974ms  daltonize
+      API calls:   35.35%  128.21ms        13  9.8624ms  31.900us  14.766ms  cuMemcpyHtoD
+                   30.36%  110.13ms        10  11.013ms  10.640ms  11.892ms  cuMemcpyDtoH
+                   23.20%  84.167ms         1  84.167ms  84.167ms  84.167ms  cuCtxCreate
+                    5.62%  20.399ms         1  20.399ms  20.399ms  20.399ms  cuCtxDetach
+                    3.21%  11.631ms        20  581.53us  158.90us  1.0197ms  cuMemFree
+                    1.37%  4.9512ms        20  247.56us  182.80us  342.40us  cuMemAlloc
+                    0.76%  2.7676ms         1  2.7676ms  2.7676ms  2.7676ms  cuModuleLoadDataEx
+                    0.10%  365.20us        10  36.520us  28.000us  101.00us  cuLaunchKernel
+                    0.02%  54.700us         1  54.700us  54.700us  54.700us  cuModuleUnload
+                    0.00%  13.000us        10  1.3000us  1.1000us  1.6000us  cuFuncSetBlockShape
+                    0.00%  7.7000us         2  3.8500us  2.5000us  5.2000us  cuCtxPopCurrent
+                    0.00%  4.1000us         1  4.1000us  4.1000us  4.1000us  cuModuleGetFunction
+                    0.00%  3.8000us         3  1.2660us     100ns  2.5000us  cuDeviceGetCount
+                    0.00%  3.7000us         2  1.8500us  1.7000us  2.0000us  cuCtxGetDevice
+                    0.00%  2.6000us         2  1.3000us     100ns  2.5000us  cuCtxPushCurrent
+                    0.00%  2.3000us         3     766ns     300ns  1.7000us  cuModuleGetGlobal
+                    0.00%  1.6000us         2     800ns     300ns  1.3000us  cuDeviceGet
+                    0.00%  1.3000us         3     433ns     200ns     800ns  cuDeviceGetAttribute
+                    0.00%     900ns         1     900ns     900ns     900ns  cuDeviceComputeCapability
+
+D:\User\Desktop\School\CCPROG\Workspace\Python\CEPARCO\DaltonizationCUDA>nvprof python "Timing_versions/TimingPycuda.py"
+==23372== NVPROF is profiling process 23372, command: python Timing_versions/TimingPycuda.py
+[0]Execution Time: 0.1796807000064291
+[1]Execution Time: 0.23267659998964518
+[2]Execution Time: 0.17580530000850558
+[3]Execution Time: 0.15128729998832569
+[4]Execution Time: 0.17760390002513304
+[5]Execution Time: 0.16971240000566468
+[6]Execution Time: 0.1739985999884084
+[7]Execution Time: 0.18417099997168407
+[8]Execution Time: 0.152991299983114
+[9]Execution Time: 0.16397349996259436
+Avg Execution Time: 0.1761900599929504
+==23372== Profiling application: python Timing_versions/TimingPycuda.py
+==23372== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   47.03%  238.70ms        13  18.362ms     544ns  38.472ms  [CUDA memcpy HtoD]
+                   45.31%  229.98ms        10  22.998ms  19.946ms  31.288ms  [CUDA memcpy DtoH]
+                    7.66%  38.902ms        10  3.8902ms  3.5773ms  4.7288ms  daltonize
+      API calls:   43.10%  303.88ms        13  23.376ms  32.100us  44.303ms  cuMemcpyHtoD
+                   38.55%  271.78ms        10  27.178ms  23.790ms  36.426ms  cuMemcpyDtoH
+                   11.29%  79.601ms         1  79.601ms  79.601ms  79.601ms  cuCtxCreate
+                    2.88%  20.280ms        20  1.0140ms  369.20us  3.1836ms  cuMemFree
+                    2.51%  17.706ms         1  17.706ms  17.706ms  17.706ms  cuCtxDetach
+                    1.24%  8.7189ms        20  435.95us  283.10us  1.1638ms  cuMemAlloc
+                    0.36%  2.5570ms         1  2.5570ms  2.5570ms  2.5570ms  cuModuleLoadDataEx
+                    0.06%  399.90us        10  39.990us  27.800us  88.600us  cuLaunchKernel
+                    0.01%  49.700us         1  49.700us  49.700us  49.700us  cuModuleUnload
+                    0.00%  15.300us        10  1.5300us  1.0000us  2.4000us  cuFuncSetBlockShape
+                    0.00%  8.4000us         2  4.2000us  3.1000us  5.3000us  cuCtxPopCurrent
+                    0.00%  4.6000us         3  1.5330us     200ns  2.3000us  cuDeviceGetCount
+                    0.00%  4.0000us         1  4.0000us  4.0000us  4.0000us  cuModuleGetFunction
+                    0.00%  3.5000us         2  1.7500us  1.3000us  2.2000us  cuCtxGetDevice
+                    0.00%  2.3000us         3     766ns     300ns  1.7000us  cuModuleGetGlobal
+                    0.00%  2.3000us         2  1.1500us     200ns  2.1000us  cuCtxPushCurrent
+                    0.00%  1.9000us         2     950ns     700ns  1.2000us  cuDeviceGet
+                    0.00%     900ns         3     300ns     100ns     600ns  cuDeviceGetAttribute
+                    0.00%     800ns         1     800ns     800ns     800ns  cuDeviceComputeCapability
+
+D:\User\Desktop\School\CCPROG\Workspace\Python\CEPARCO\DaltonizationCUDA>nvprof python "Timing_versions/TimingPycuda.py"
+==29616== NVPROF is profiling process 29616, command: python Timing_versions/TimingPycuda.py
+[0]Execution Time: 0.4012208000058308
+[1]Execution Time: 0.43086800002492964
+[2]Execution Time: 0.4286279999651015
+[3]Execution Time: 0.4466388000291772
+[4]Execution Time: 0.41727209999226034
+[5]Execution Time: 0.4459373999852687
+[6]Execution Time: 0.40522959997178987
+[7]Execution Time: 0.4381518000154756
+[8]Execution Time: 0.4193154000095092
+[9]Execution Time: 0.42423259996576235
+Avg Execution Time: 0.42574944999651054
+==29616== Profiling application: python Timing_versions/TimingPycuda.py
+==29616== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   46.73%  521.90ms        13  40.146ms     448ns  59.826ms  [CUDA memcpy HtoD]
+                   45.84%  511.90ms        10  51.190ms  48.963ms  53.294ms  [CUDA memcpy DtoH]
+                    7.43%  82.968ms        10  8.2968ms  7.9199ms  9.1648ms  daltonize
+      API calls:   46.53%  658.24ms        13  50.634ms  27.200us  72.452ms  cuMemcpyHtoD
+                   42.19%  596.94ms        10  59.694ms  57.066ms  62.701ms  cuMemcpyDtoH
+                    5.29%  74.780ms         1  74.780ms  74.780ms  74.780ms  cuCtxCreate
+                    3.04%  42.970ms        20  2.1485ms  1.4632ms  2.7314ms  cuMemFree
+                    1.41%  19.950ms        20  997.52us  593.50us  1.7555ms  cuMemAlloc
+                    1.33%  18.886ms         1  18.886ms  18.886ms  18.886ms  cuCtxDetach
+                    0.18%  2.6074ms         1  2.6074ms  2.6074ms  2.6074ms  cuModuleLoadDataEx
+                    0.02%  352.30us        10  35.230us  27.500us  82.300us  cuLaunchKernel
+                    0.00%  45.400us         1  45.400us  45.400us  45.400us  cuModuleUnload
+                    0.00%  13.700us        10  1.3700us  1.0000us  1.7000us  cuFuncSetBlockShape
+                    0.00%  9.0000us         2  4.5000us  2.7000us  6.3000us  cuCtxPopCurrent
+                    0.00%  4.1000us         3  1.3660us     100ns  3.0000us  cuDeviceGetCount
+                    0.00%  4.0000us         1  4.0000us  4.0000us  4.0000us  cuModuleGetFunction
+                    0.00%  3.6000us         2  1.8000us  1.4000us  2.2000us  cuCtxGetDevice
+                    0.00%  1.9000us         3     633ns     300ns  1.3000us  cuModuleGetGlobal
+                    0.00%  1.9000us         2     950ns     100ns  1.8000us  cuCtxPushCurrent
+                    0.00%  1.6000us         2     800ns     400ns  1.2000us  cuDeviceGet
+                    0.00%     900ns         3     300ns     200ns     500ns  cuDeviceGetAttribute
+                    0.00%     900ns         1     900ns     900ns     900ns  cuDeviceComputeCapability
+
+D:\User\Desktop\School\CCPROG\Workspace\Python\CEPARCO\DaltonizationCUDA>nvprof python "Timing_versions/TimingPycuda.py"
+==4148== NVPROF is profiling process 4148, command: python Timing_versions/TimingPycuda.py
+[0]Execution Time: 0.7328599999891594
+[1]Execution Time: 0.7257571999798529
+[2]Execution Time: 0.7388748000375926
+[3]Execution Time: 0.7394708000356331
+[4]Execution Time: 0.7361103000002913
+[5]Execution Time: 0.7397427000105381
+[6]Execution Time: 0.7824108999921009
+[7]Execution Time: 0.743050699995365
+[8]Execution Time: 0.7308858999749646
+[9]Execution Time: 0.7495892000151798
+Avg Execution Time: 0.7418752500030678
+==4148== Profiling application: python Timing_versions/TimingPycuda.py
+==4148== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   47.35%  912.10ms        10  91.210ms  83.668ms  97.804ms  [CUDA memcpy DtoH]
+                   45.60%  878.22ms        13  67.555ms     417ns  90.929ms  [CUDA memcpy HtoD]
+                    7.05%  135.78ms        10  13.578ms  13.569ms  13.586ms  daltonize
+      API calls:   45.85%  1.08671s        13  83.593ms  33.300us  112.03ms  cuMemcpyHtoD
+                   44.38%  1.05181s        10  105.18ms  97.647ms  111.75ms  cuMemcpyDtoH
+                    3.50%  83.059ms        20  4.1530ms  3.6754ms  4.8818ms  cuMemFree
+                    3.39%  80.371ms         1  80.371ms  80.371ms  80.371ms  cuCtxCreate
+                    1.91%  45.191ms        20  2.2595ms  1.2864ms  5.5620ms  cuMemAlloc
+                    0.83%  19.702ms         1  19.702ms  19.702ms  19.702ms  cuCtxDetach
+                    0.11%  2.6440ms         1  2.6440ms  2.6440ms  2.6440ms  cuModuleLoadDataEx
+                    0.02%  377.10us        10  37.710us  29.500us  106.00us  cuLaunchKernel
+                    0.00%  43.400us         1  43.400us  43.400us  43.400us  cuModuleUnload
+                    0.00%  13.300us        10  1.3300us  1.2000us  1.4000us  cuFuncSetBlockShape
+                    0.00%  8.3000us         2  4.1500us  2.1000us  6.2000us  cuCtxPopCurrent
+                    0.00%  4.9000us         2  2.4500us     100ns  4.8000us  cuCtxPushCurrent
+                    0.00%  4.8000us         1  4.8000us  4.8000us  4.8000us  cuModuleGetFunction
+                    0.00%  4.2000us         2  2.1000us  2.1000us  2.1000us  cuCtxGetDevice
+                    0.00%  4.0000us         3  1.3330us     100ns  2.5000us  cuDeviceGetCount
+                    0.00%  3.6000us         3  1.2000us     400ns  2.8000us  cuModuleGetGlobal
+                    0.00%  2.7000us         2  1.3500us     400ns  2.3000us  cuDeviceGet
+                    0.00%  1.5000us         1  1.5000us  1.5000us  1.5000us  cuDeviceComputeCapability
+                    0.00%  1.0000us         3     333ns     100ns     700ns  cuDeviceGetAttribute
+
+D:\User\Desktop\School\CCPROG\Workspace\Python\CEPARCO\DaltonizationCUDA>
