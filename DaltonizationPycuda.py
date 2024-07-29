@@ -4,156 +4,147 @@ import pycuda.autoinit
 import pycuda.driver as cuda
 from pycuda.compiler import SourceModule
 
-# CUDA kernel for converting RGB to LMS
+# Colorspace constant matrices
+RGB_to_LMS = np.array([ [17.8824,43.5161,4.11935],
+                        [3.45565,27.1554,3.86714],
+                        [0.0299566,0.184309,1.46709]]).astype(np.float32)
+LMS_to_RGB = np.array([ [0.0809,-0.1305,0.11672],
+                        [-0.01025,0.054019327,-0.11361],
+                        [-0.0003653,-0.004122,0.69351]]).astype(np.float32)
+# Shift matrix
+shift = np.array([  [0,0,0],
+                    [0.7,1,0],
+                    [0.7,0,1]]).astype(np.float32)
+
 kernel_code = """
-__global__ void rgb_to_lms(float *rgb, float *lms, int width, int height, float *RGB_to_LMS) {
+__constant__ float RGB_to_LMS[9];
+__constant__ float LMS_to_RGB[9];
+__constant__ float shift[9];
+
+__global__ void daltonize(float *img, float intensity, char deficiency, float *result, int width, int height) {
     int x = blockIdx.x * blockDim.x + threadIdx.x;
     int y = blockIdx.y * blockDim.y + threadIdx.y;
-    int idx = (y * width + x) * 3;
-
-    if (x < width && y < height) {
-        float r = rgb[idx];
-        float g = rgb[idx + 1];
-        float b = rgb[idx + 2];
-
-        lms[idx]     = RGB_to_LMS[0] * r + RGB_to_LMS[1] * g + RGB_to_LMS[2] * b;
-        lms[idx + 1] = RGB_to_LMS[3] * r + RGB_to_LMS[4] * g + RGB_to_LMS[5] * b;
-        lms[idx + 2] = RGB_to_LMS[6] * r + RGB_to_LMS[7] * g + RGB_to_LMS[8] * b;
+    int idx = (y * width + x) * 3; // 1D addressing
+    
+    if (x >= width || y >= height) return;
+    
+    float daltonization_matrices[3][3];
+    
+    // Set daltonization matrices based on deficiency
+    if (deficiency == 'd') {  // Deuteranomaly
+        daltonization_matrices[0][0] = 1; daltonization_matrices[0][1] = 0; daltonization_matrices[0][2] = 0;
+        daltonization_matrices[1][0] = 0.4942; daltonization_matrices[1][1] = 0; daltonization_matrices[1][2] = 1.2483;
+        daltonization_matrices[2][0] = 0; daltonization_matrices[2][1] = 0; daltonization_matrices[2][2] = 1;
+    } else if (deficiency == 'p') {  // Protanomaly
+        daltonization_matrices[0][0] = 0; daltonization_matrices[0][1] = 2.0234; daltonization_matrices[0][2] = -2.5258;
+        daltonization_matrices[1][0] = 0; daltonization_matrices[1][1] = 1; daltonization_matrices[1][2] = 0;
+        daltonization_matrices[2][0] = 0; daltonization_matrices[2][1] = 0; daltonization_matrices[2][2] = 1;
+    } else if (deficiency == 't') {  // Tritanomaly
+        daltonization_matrices[0][0] = 1; daltonization_matrices[0][1] = 0; daltonization_matrices[0][2] = 0;
+        daltonization_matrices[1][0] = 0; daltonization_matrices[1][1] = 1; daltonization_matrices[1][2] = 0;
+        daltonization_matrices[2][0] = -0.395913; daltonization_matrices[2][1] = 0.801109; daltonization_matrices[2][2] = 0;
+    } else {
+        printf("Invalid deficiency type. Supported types are: Deuteranomaly(d), Protanomaly(p), Tritanomaly(t)");
+        return;
     }
-}
+    
+    // RGB to LMS
+    float R = img[idx];
+    float G = img[idx + 1];
+    float B = img[idx + 2];
 
-__global__ void simulate_color_blindness(float *lms, float *simulated_lms, int width, int height, float *daltonization_matrix) {
-    int x = blockIdx.x * blockDim.x + threadIdx.x;
-    int y = blockIdx.y * blockDim.y + threadIdx.y;
-    int idx = (y * width + x) * 3;
+    float L = RGB_to_LMS[0] * R + RGB_to_LMS[1] * G + RGB_to_LMS[2] * B;
+    float M = RGB_to_LMS[3] * R + RGB_to_LMS[4] * G + RGB_to_LMS[5] * B;
+    float S = RGB_to_LMS[6] * R + RGB_to_LMS[7] * G + RGB_to_LMS[8] * B;
 
-    if (x < width && y < height) {
-        float l = lms[idx];
-        float m = lms[idx + 1];
-        float s = lms[idx + 2];
+    // LMS to simul LMS
+    float _L = daltonization_matrices[0][0] * L + daltonization_matrices[0][1] * M + daltonization_matrices[0][2] * S;
+    float _M = daltonization_matrices[1][0] * L + daltonization_matrices[1][1] * M + daltonization_matrices[1][2] * S;
+    float _S = daltonization_matrices[2][0] * L + daltonization_matrices[2][1] * M + daltonization_matrices[2][2] * S;
 
-        simulated_lms[idx]     = daltonization_matrix[0] * l + daltonization_matrix[1] * m + daltonization_matrix[2] * s;
-        simulated_lms[idx + 1] = daltonization_matrix[3] * l + daltonization_matrix[4] * m + daltonization_matrix[5] * s;
-        simulated_lms[idx + 2] = daltonization_matrix[6] * l + daltonization_matrix[7] * m + daltonization_matrix[8] * s;
-    }
-}
+    // Error calculation
+    float eL = (L - _L) * intensity;
+    float eM = (M - _M) * intensity;
+    float eS = (S - _S) * intensity;
 
-__global__ void apply_daltonization_correction(float *lms, float *simulated_lms, float *corrected_lms, int width, int height, float level) {
-    int x = blockIdx.x * blockDim.x + threadIdx.x;
-    int y = blockIdx.y * blockDim.y + threadIdx.y;
-    int idx = (y * width + x) * 3;
+    // Compensated LMS
+    float cL = eL * shift[0] + eM * shift[1] + eS * shift[2];
+    float cM = eL * shift[3] + eM * shift[4] + eS * shift[5];
+    float cS = eL * shift[6] + eM * shift[7] + eS * shift[8];
 
-    if (x < width && y < height) {
-        corrected_lms[idx]     = lms[idx]     + level * (lms[idx]     - simulated_lms[idx]);
-        corrected_lms[idx + 1] = lms[idx + 1] + level * (lms[idx + 1] - simulated_lms[idx + 1]);
-        corrected_lms[idx + 2] = lms[idx + 2] + level * (lms[idx + 2] - simulated_lms[idx + 2]);
-    }
-}
+    // Compensated LMS to compensated RGB
+    float _R = LMS_to_RGB[0] * cL + LMS_to_RGB[1] * cM + LMS_to_RGB[2] * cS;
+    float _G = LMS_to_RGB[3] * cL + LMS_to_RGB[4] * cM + LMS_to_RGB[5] * cS;
+    float _B = LMS_to_RGB[6] * cL + LMS_to_RGB[7] * cM + LMS_to_RGB[8] * cS;
 
-__global__ void lms_to_rgb(float *lms, float *rgb, int width, int height, float *LMS_to_RGB) {
-    int x = blockIdx.x * blockDim.x + threadIdx.x;
-    int y = blockIdx.y * blockDim.y + threadIdx.y;
-    int idx = (y * width + x) * 3;
-
-    if (x < width && y < height) {
-        float l = lms[idx];
-        float m = lms[idx + 1];
-        float s = lms[idx + 2];
-
-        rgb[idx]     = LMS_to_RGB[0] * l + LMS_to_RGB[1] * m + LMS_to_RGB[2] * s;
-        rgb[idx + 1] = LMS_to_RGB[3] * l + LMS_to_RGB[4] * m + LMS_to_RGB[5] * s;
-        rgb[idx + 2] = LMS_to_RGB[6] * l + LMS_to_RGB[7] * m + LMS_to_RGB[8] * s;
-    }
+    // Final RGB
+    result[idx] = min(max(R + _R, 0.0), 255.0);
+    result[idx + 1] = min(max(G + _G, 0.0), 255.0);
+    result[idx + 2] = min(max(B + _B, 0.0), 255.0);
 }
 """
 
 mod = SourceModule(kernel_code)
 
-rgb_to_lms = mod.get_function("rgb_to_lms")
-simulate_color_blindness = mod.get_function("simulate_color_blindness")
-apply_daltonization_correction = mod.get_function("apply_daltonization_correction")
-lms_to_rgb = mod.get_function("lms_to_rgb")
+# Copy constants to device
+RGB_to_LMS_gpu = mod.get_global('RGB_to_LMS')[0]
+LMS_to_RGB_gpu = mod.get_global('LMS_to_RGB')[0]
+shift_gpu = mod.get_global('shift')[0]
 
-def daltonize(image, level, deficiency_type):
-    RGB_to_LMS = np.array([[17.8824, 43.5161, 4.11935],
-                           [3.45565, 27.1554, 3.86714],
-                           [0.0299566, 0.184309, 1.46709]], dtype=np.float32)
+# Host to Device
+cuda.memcpy_htod(RGB_to_LMS_gpu, RGB_to_LMS)
+cuda.memcpy_htod(LMS_to_RGB_gpu, LMS_to_RGB)
+cuda.memcpy_htod(shift_gpu, shift)
 
-    LMS_to_RGB = np.linalg.inv(RGB_to_LMS).astype(np.float32)
+# Define the kernel function
+daltonize_kernel = mod.get_function("daltonize")
 
-    daltonization_matrices = {
-        "Deuteranomaly": np.array([[1, 0, 0],
-                                   [0.4942, 0, 1.2483],
-                                   [0, 0, 1]], dtype=np.float32),
-        "Protanomaly": np.array([[0, 2.0234, -2.5258],
-                                 [0, 1, 0],
-                                 [0, 0, 1]], dtype=np.float32),
-        "Tritanomaly": np.array([[1, 0, 0],
-                                 [0, 1, 0],
-                                 [-0.395913, 0.801109, 0]], dtype=np.float32)
-    }
+def daltonize_gpu(img, intensity, deficiency):
+    height, width, channels = img.shape
+    img = img.astype(np.float32).flatten()
+    result = np.zeros_like(img)
 
-    daltonization_matrix = daltonization_matrices.get(deficiency_type, None)
-    if daltonization_matrix is None:
-        raise ValueError("Invalid deficiency type. Supported types are: Deuteranomaly, Protanomaly, Tritanomaly")
+    img_gpu = cuda.mem_alloc(img.nbytes)
+    result_gpu = cuda.mem_alloc(result.nbytes)
 
-    image_rgb = image.astype(np.float32) / 255.0
-    height, width, channels = image_rgb.shape
+    cuda.memcpy_htod(img_gpu, img)
+    
+    block = (16, 16, 1)
+    grid = (int(np.ceil(width / block[0])), int(np.ceil(height / block[1])), 1)
+    
+    daltonize_kernel(img_gpu, np.float32(intensity), np.int8(ord(deficiency)), result_gpu, np.int32(width), np.int32(height), block=block, grid=grid)
+    
+    cuda.memcpy_dtoh(result, result_gpu)
+    result = result.reshape((height, width, channels)).astype(np.uint8)
+    
+    img_gpu.free()
+    result_gpu.free()
 
-    rgb = image_rgb.flatten()
-    lms = np.empty_like(rgb)
-    simulated_lms = np.empty_like(rgb)
-    corrected_lms = np.empty_like(rgb)
-    corrected_rgb = np.empty_like(rgb)
+    return result
 
-    rgb_gpu = cuda.mem_alloc(rgb.nbytes)
-    lms_gpu = cuda.mem_alloc(lms.nbytes)
-    simulated_lms_gpu = cuda.mem_alloc(simulated_lms.nbytes)
-    corrected_lms_gpu = cuda.mem_alloc(corrected_lms.nbytes)
-    corrected_rgb_gpu = cuda.mem_alloc(corrected_rgb.nbytes)
-
-    cuda.memcpy_htod(rgb_gpu, rgb)
-    cuda.memcpy_htod(lms_gpu, lms)
-    cuda.memcpy_htod(simulated_lms_gpu, simulated_lms)
-    cuda.memcpy_htod(corrected_lms_gpu, corrected_lms)
-    cuda.memcpy_htod(corrected_rgb_gpu, corrected_rgb)
-
-    block_size = (16, 16, 1)
-    grid_size = (int((width + block_size[0] - 1) / block_size[0]), int((height + block_size[1] - 1) / block_size[1]))
-
-    rgb_to_lms(rgb_gpu, lms_gpu, np.int32(width), np.int32(height), cuda.In(RGB_to_LMS.flatten()), block=block_size, grid=grid_size)
-    simulate_color_blindness(lms_gpu, simulated_lms_gpu, np.int32(width), np.int32(height), cuda.In(daltonization_matrix.flatten()), block=block_size, grid=grid_size)
-    apply_daltonization_correction(lms_gpu, simulated_lms_gpu, corrected_lms_gpu, np.int32(width), np.int32(height), np.float32(level), block=block_size, grid=grid_size)
-    lms_to_rgb(corrected_lms_gpu, corrected_rgb_gpu, np.int32(width), np.int32(height), cuda.In(LMS_to_RGB.flatten()), block=block_size, grid=grid_size)
-
-    cuda.memcpy_dtoh(corrected_rgb, corrected_rgb_gpu)
-
-    corrected_rgb = np.clip(corrected_rgb, 0, 1)
-    corrected_image = (corrected_rgb.reshape((height, width, channels)) * 255).astype(np.uint8)
-
-    return corrected_image
-
+# Default parameters
 correction_level = 100
-correction_types = ["Deuteranomaly", "Protanomaly", "Tritanomaly"]
-current_correction_type = "Deuteranomaly"
+correction_types = ["d", "p", "t"]
+default_correction_type = "d"
 
+# Input video
+vid = cv.VideoCapture(0)
+
+# GUI
 window_name = 'Daltonization for Color Deficiency Correction'
 cv.namedWindow(window_name, cv.WINDOW_AUTOSIZE)
-
 cv.createTrackbar("Correction Level (%)", window_name, correction_level, 500, lambda x: x)
 cv.createTrackbar("Correction Type", window_name, 0, len(correction_types) - 1, lambda x: x)
 
-vid = cv.VideoCapture(0)
-
 while True:
     ret, frame = vid.read()
-
+    
     level = cv.getTrackbarPos("Correction Level (%)", window_name) / 100.0
     correction_type_index = cv.getTrackbarPos("Correction Type", window_name)
     
-    current_correction_type = correction_types[correction_type_index]
+    default_correction_type = correction_types[correction_type_index]
 
-    corrected = daltonize(frame, level, current_correction_type)
+    corrected = daltonize_gpu(frame, level, default_correction_type)
 
     cv.putText(frame, "Original", (10,30),
                cv.FONT_HERSHEY_SIMPLEX, 0.4, (255, 0, 0), 2)
