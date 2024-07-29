@@ -1,5 +1,6 @@
 import cv2 as cv
 import numpy as np
+from timeit import default_timer as timer
 
 # Colorspace matrices
 RGB_to_LMS = np.array([[17.8824,43.5161,4.11935],
@@ -68,6 +69,11 @@ cv.namedWindow(window_name, cv.WINDOW_AUTOSIZE)
 cv.createTrackbar("Correction Level (%)", window_name, correction_level, 500, lambda x: x)
 cv.createTrackbar("Correction Type", window_name, 0, len(correction_types) - 1, lambda x: x)
 
+# FPS variables
+fps = 0
+frame_count = 0
+start_time = timer()
+
 while True:
     ret, frame = vid.read()
     
@@ -77,6 +83,18 @@ while True:
     default_correction_type = correction_types[correction_type_index]
 
     corrected = daltonize(frame, level, default_correction_type)
+
+    # Calculate FPS
+    frame_count += 1
+    elapsed_time = timer() - start_time
+    if elapsed_time > 1:
+        fps = frame_count / elapsed_time
+        frame_count = 0
+        start_time = timer()
+
+    # Display the FPS on the frame
+    cv.putText(corrected, f'FPS: {fps:.2f}', (10, 30),
+               cv.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv.LINE_AA)
 
     cv.putText(frame, "Original", (10,30),
                cv.FONT_HERSHEY_SIMPLEX, 0.4, (255, 0, 0), 2)
