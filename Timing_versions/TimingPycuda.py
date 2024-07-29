@@ -124,7 +124,7 @@ def daltonize_gpu(img, intensity, deficiency):
     return result
 
 # Get image data
-path = "Images/colorblind.jpg" # Should work, if it doesn't, use full path to img
+path = "Images/img8k.jpg" # Should work, if it doesn't, use full path to img
 frame = cv.imread(path)
 
 exec_time = 0
