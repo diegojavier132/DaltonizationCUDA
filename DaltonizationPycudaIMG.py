@@ -129,7 +129,7 @@ correction_types = ["d", "p", "t"]
 default_correction_type = "d"
 
 # Get image data
-path = "Images/colorblind.jpg" # Should work, if it doesn't, use full path to img
+path = "Images/img4k.jpg" # Should work, if it doesn't, use full path to img
 frame = cv.imread(path)
 
 # GUI
