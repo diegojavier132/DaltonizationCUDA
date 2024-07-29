@@ -1,0 +1,68 @@
+Obtained from CMD. The order is from 1K to 8K
+
+D:\User\Desktop\School\CCPROG\Workspace\Python\CEPARCO\DaltonizationCUDA>python "Timing_versions/TimingPython.py"
+[0]Execution Time: 0.22456639999290928
+[1]Execution Time: 0.22701370000140741
+[2]Execution Time: 0.22613269998691976
+[3]Execution Time: 0.2312652000109665
+[4]Execution Time: 0.2243789000203833
+[5]Execution Time: 0.2297394999768585
+[6]Execution Time: 0.2516294000088237
+[7]Execution Time: 0.25618679996114224
+[8]Execution Time: 0.2631664000218734
+[9]Execution Time: 0.27101950003998354
+Avg Execution Time: 0.24050985000212677
+
+D:\User\Desktop\School\CCPROG\Workspace\Python\CEPARCO\DaltonizationCUDA>python "Timing_versions/TimingPython.py"
+[0]Execution Time: 0.4425782000180334
+[1]Execution Time: 0.558077699970454
+[2]Execution Time: 0.560299800010398
+[3]Execution Time: 0.5478000000002794
+[4]Execution Time: 0.45667169999796897
+[5]Execution Time: 0.44369609997374937
+[6]Execution Time: 0.425498399999924
+[7]Execution Time: 0.4149051000131294
+[8]Execution Time: 0.4350195999722928
+[9]Execution Time: 0.4367586000007577
+Avg Execution Time: 0.4721305199956987
+
+D:\User\Desktop\School\CCPROG\Workspace\Python\CEPARCO\DaltonizationCUDA>python "Timing_versions/TimingPython.py"
+[0]Execution Time: 1.1426161999697797
+[1]Execution Time: 0.9744274000404403
+[2]Execution Time: 1.0341859000036493
+[3]Execution Time: 1.0371322000282817
+[4]Execution Time: 0.9192256000242196
+[5]Execution Time: 0.9309515000204556
+[6]Execution Time: 0.9007731999736279
+[7]Execution Time: 0.8882062999764457
+[8]Execution Time: 0.9030038000200875
+[9]Execution Time: 0.9195710000349209
+Avg Execution Time: 0.9650093100091908
+
+D:\User\Desktop\School\CCPROG\Workspace\Python\CEPARCO\DaltonizationCUDA>python "Timing_versions/TimingPython.py"
+[0]Execution Time: 5.036457099951804
+[1]Execution Time: 2.7585902999853715
+[2]Execution Time: 2.8022069000289775
+[3]Execution Time: 2.6446479999576695
+[4]Execution Time: 2.461496200005058
+[5]Execution Time: 2.615113299980294
+[6]Execution Time: 2.3044779999763705
+[7]Execution Time: 2.3844350000144914
+[8]Execution Time: 2.38313069997821
+[9]Execution Time: 2.5236094999709167
+Avg Execution Time: 2.7914164999849165
+
+D:\User\Desktop\School\CCPROG\Workspace\Python\CEPARCO\DaltonizationCUDA>python "Timing_versions/TimingPython.py"
+[0]Execution Time: 6.035484799998812
+[1]Execution Time: 4.287259500008076
+[2]Execution Time: 4.009392799984198
+[3]Execution Time: 4.0821301999967545
+[4]Execution Time: 4.283842400007416
+[5]Execution Time: 4.552861000003759
+[6]Execution Time: 3.9802865000092424
+[7]Execution Time: 3.9666831999784335
+[8]Execution Time: 4.127449599967804
+[9]Execution Time: 4.026155599975027
+Avg Execution Time: 4.335154559992953
+
+D:\User\Desktop\School\CCPROG\Workspace\Python\CEPARCO\DaltonizationCUDA>
