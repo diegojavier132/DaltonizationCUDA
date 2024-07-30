@@ -3,7 +3,6 @@ import numpy as np
 import pycuda.autoinit
 import pycuda.driver as cuda
 from pycuda.compiler import SourceModule
-from timeit import default_timer as timer
 
 # Colorspace constant matrices
 RGB_to_LMS = np.array([ [17.8824,43.5161,4.11935],
@@ -110,7 +109,7 @@ def daltonize_gpu(img, intensity, deficiency):
 
     cuda.memcpy_htod(img_gpu, img)
     
-    block = (32, 16, 1)
+    block = (32, 32, 1)
     grid = (int(np.ceil(width / block[0])), int(np.ceil(height / block[1])), 1)
     
     daltonize_kernel(img_gpu, np.float32(intensity), np.int8(ord(deficiency)), result_gpu, np.int32(width), np.int32(height), block=block, grid=grid)
@@ -125,18 +124,9 @@ def daltonize_gpu(img, intensity, deficiency):
     return result
 
 # Get image data
-path = "Images/img8k.jpg" # Should work, if it doesn't, use full path to img
+path = "Images/img6k.jpg" # Should work, if it doesn't, use full path to img
 frame = cv.imread(path)
 
-exec_time = 0
-
 for i in range(0,10):
-    start = timer()
+    print(f"[{i}]Run")
     daltonize_gpu(frame, 1, 'd')
-    end = timer()
-    # Function execution time
-    print(f"[{i}]Execution Time: {end - start}")
-    exec_time = exec_time + end - start
-
-exec_time = exec_time / 10   
-print(f"Avg Execution Time: {exec_time}")
