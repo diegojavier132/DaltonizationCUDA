@@ -2,6 +2,10 @@
 
 PyCUDA Installation Video: https://www.youtube.com/watch?v=WVF1OcSXfMA
 
+## Milestone #3 7/30/2024
+
+The PyCuda version of the sequential program has been implemented. Separate versions have been made to specifically collect average execution times which is located in the Timing_versions folder.
+<br>Refer to the PDF file "Final Integrating Project Documentation" for the documentation of this project
 
 ## Milestone #2 7/5/2024
 
