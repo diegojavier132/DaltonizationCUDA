@@ -1,0 +1,113 @@
+PYTHON SQUARE
+D:\User\Desktop\School\CCPROG\Workspace\Python\CEPARCO\DaltonizationCUDA\Mem_manage_tests>python PythonSquare.py
+Square Function
+numElements: 1048576
+Avg Execution Time: 0.2555546800023876
+
+UMEM SQUARE
+D:\User\Desktop\School\CCPROG\Workspace\Python\CEPARCO\DaltonizationCUDA\Mem_manage_tests>nvprof python PycudaUmem.py
+==26936== NVPROF is profiling process 26936, command: python PycudaUmem.py
+Square Function
+numElements: 1048576
+numBlocks: 1024, numThreads: 1024
+CUDA Error count: 0
+==26936== Profiling application: python PycudaUmem.py
+==26936== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:  100.00%  965.96us        10  96.596us  95.809us  97.024us  square
+      API calls:   55.36%  84.135ms         1  84.135ms  84.135ms  84.135ms  cuCtxCreate
+                   29.46%  44.779ms         2  22.389ms  1.1214ms  43.657ms  cuMemAllocManaged
+                   11.13%  16.921ms         1  16.921ms  16.921ms  16.921ms  cuCtxDetach
+                    1.81%  2.7436ms        10  274.36us  3.5000us  2.7036ms  cuLaunchKernel
+                    1.37%  2.0799ms         2  1.0400ms  672.50us  1.4074ms  cuMemFree
+                    0.72%  1.0960ms         1  1.0960ms  1.0960ms  1.0960ms  cuCtxSynchronize
+                    0.11%  164.40us         1  164.40us  164.40us  164.40us  cuModuleLoadDataEx
+                    0.02%  34.400us         1  34.400us  34.400us  34.400us  cuModuleUnload
+                    0.01%  13.100us         4  3.2750us  1.5000us  8.0000us  cuCtxPopCurrent
+                    0.00%  5.0000us        10     500ns     200ns  2.7000us  cuFuncSetBlockShape
+                    0.00%  4.9000us         3  1.6330us     200ns  3.8000us  cuDeviceGetCount
+                    0.00%  4.5000us         1  4.5000us  4.5000us  4.5000us  cuModuleGetFunction
+                    0.00%  3.7000us         2  1.8500us  1.7000us  2.0000us  cuCtxGetDevice
+                    0.00%  2.7000us         4     675ns     200ns  2.0000us  cuCtxPushCurrent
+                    0.00%  1.8000us         2     900ns     300ns  1.5000us  cuDeviceGet
+                    0.00%     900ns         3     300ns     100ns     600ns  cuDeviceGetAttribute
+                    0.00%     800ns         1     800ns     800ns     800ns  cuDeviceComputeCapability
+
+==26936== Unified Memory profiling result:
+Device "NVIDIA GeForce GTX 1050 Ti (0)"
+   Count  Avg Size  Min Size  Max Size  Total Size  Total Time  Name
+      32  128.00KB  128.00KB  128.00KB  4.000000MB  1.551500ms  Host To Device
+      18  455.11KB  32.000KB  1.0000MB  8.000000MB  42.50020ms  Device To Host
+
+MIXED SQUARE
+D:\User\Desktop\School\CCPROG\Workspace\Python\CEPARCO\DaltonizationCUDA\Mem_manage_tests>nvprof python PycudaMixed.py
+==36464== NVPROF is profiling process 36464, command: python PycudaMixed.py
+Square Function
+numElements: 1048576
+numBlocks: 1024, numThreads: 1024
+CUDA Error count: 0
+==36464== Profiling application: python PycudaMixed.py
+==36464== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   53.56%  963.82us        10  96.381us  95.169us  97.217us  square
+                   46.44%  835.69us         1  835.69us  835.69us  835.69us  [CUDA memcpy DtoH]
+      API calls:   61.23%  107.77ms         1  107.77ms  107.77ms  107.77ms  cuCtxCreate
+                   25.36%  44.631ms         1  44.631ms  44.631ms  44.631ms  cuMemAllocManaged
+                    9.69%  17.053ms         1  17.053ms  17.053ms  17.053ms  cuCtxDetach
+                    1.58%  2.7777ms        10  277.77us  3.6000us  2.7356ms  cuLaunchKernel
+                    0.64%  1.1306ms         1  1.1306ms  1.1306ms  1.1306ms  cuMemcpyDtoH
+                    0.63%  1.1061ms         1  1.1061ms  1.1061ms  1.1061ms  cuCtxSynchronize
+                    0.56%  982.30us         2  491.15us  229.90us  752.40us  cuMemFree
+                    0.15%  262.20us         1  262.20us  262.20us  262.20us  cuMemAlloc
+                    0.13%  220.40us         1  220.40us  220.40us  220.40us  cuModuleLoadDataEx
+                    0.02%  34.100us         1  34.100us  34.100us  34.100us  cuModuleUnload
+                    0.01%  13.400us         4  3.3500us  1.4000us  7.0000us  cuCtxPopCurrent
+                    0.00%  5.2000us        10     520ns     200ns  2.9000us  cuFuncSetBlockShape
+                    0.00%  4.4000us         3  1.4660us     200ns  2.6000us  cuDeviceGetCount
+                    0.00%  4.2000us         1  4.2000us  4.2000us  4.2000us  cuModuleGetFunction
+                    0.00%  3.8000us         2  1.9000us  1.8000us  2.0000us  cuCtxGetDevice
+                    0.00%  2.3000us         2  1.1500us     300ns  2.0000us  cuDeviceGet
+                    0.00%  2.3000us         4     575ns     200ns  1.6000us  cuCtxPushCurrent
+                    0.00%  1.0000us         3     333ns     100ns     600ns  cuDeviceGetAttribute
+                    0.00%     700ns         1     700ns     700ns     700ns  cuDeviceComputeCapability
+
+==36464== Unified Memory profiling result:
+Device "NVIDIA GeForce GTX 1050 Ti (0)"
+   Count  Avg Size  Min Size  Max Size  Total Size  Total Time  Name
+      32  128.00KB  128.00KB  128.00KB  4.000000MB  1.589400ms  Host To Device
+       9  455.11KB  32.000KB  1.0000MB  4.000000MB  20.89120ms  Device To Host
+
+EXPLICIT SQUARE
+D:\User\Desktop\School\CCPROG\Workspace\Python\CEPARCO\DaltonizationCUDA\Mem_manage_tests>nvprof python PycudaExplicit.py
+==24088== NVPROF is profiling process 24088, command: python PycudaExplicit.py
+Square Function
+numElements: 1048576
+numBlocks: 1024, numThreads: 1024
+CUDA Error count: 0
+==24088== Profiling application: python PycudaExplicit.py
+==24088== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   62.20%  3.1038ms         1  3.1038ms  3.1038ms  3.1038ms  [CUDA memcpy HtoD]
+                   19.44%  970.03us        10  97.002us  96.257us  97.857us  square
+                   18.36%  915.94us         1  915.94us  915.94us  915.94us  [CUDA memcpy DtoH]
+      API calls:   78.77%  83.656ms         1  83.656ms  83.656ms  83.656ms  cuCtxCreate
+                   17.02%  18.075ms         1  18.075ms  18.075ms  18.075ms  cuCtxDetach
+                    1.22%  1.2972ms         1  1.2972ms  1.2972ms  1.2972ms  cuMemcpyDtoH
+                    1.12%  1.1910ms         1  1.1910ms  1.1910ms  1.1910ms  cuCtxSynchronize
+                    0.95%  1.0057ms         1  1.0057ms  1.0057ms  1.0057ms  cuMemcpyHtoD
+                    0.31%  330.40us         2  165.20us  124.20us  206.20us  cuMemAlloc
+                    0.29%  303.10us         2  151.55us  107.20us  195.90us  cuMemFree
+                    0.16%  174.10us         1  174.10us  174.10us  174.10us  cuModuleLoadDataEx
+                    0.10%  101.20us        10  10.120us  3.6000us  62.700us  cuLaunchKernel
+                    0.04%  38.300us         1  38.300us  38.300us  38.300us  cuModuleUnload
+                    0.01%  13.500us         4  3.3750us  1.2000us  7.7000us  cuCtxPopCurrent
+                    0.00%  4.6000us        10     460ns     200ns  2.3000us  cuFuncSetBlockShape
+                    0.00%  4.4000us         1  4.4000us  4.4000us  4.4000us  cuModuleGetFunction
+                    0.00%  4.0000us         3  1.3330us     200ns  2.6000us  cuDeviceGetCount
+                    0.00%  3.7000us         2  1.8500us  1.5000us  2.2000us  cuCtxGetDevice
+                    0.00%  3.1000us         4     775ns     200ns  2.4000us  cuCtxPushCurrent
+                    0.00%  1.9000us         2     950ns     400ns  1.5000us  cuDeviceGet
+                    0.00%  1.1000us         3     366ns     200ns     700ns  cuDeviceGetAttribute
+                    0.00%  1.0000us         1  1.0000us  1.0000us  1.0000us  cuDeviceComputeCapability
+
+D:\User\Desktop\School\CCPROG\Workspace\Python\CEPARCO\DaltonizationCUDA\Mem_manage_tests>
