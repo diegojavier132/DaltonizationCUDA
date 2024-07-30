@@ -114,6 +114,7 @@ def daltonize_gpu(img, intensity, deficiency):
     grid = (int(np.ceil(width / block[0])), int(np.ceil(height / block[1])), 1)
     
     daltonize_kernel(img_gpu, np.float32(intensity), np.int8(ord(deficiency)), result_gpu, np.int32(width), np.int32(height), block=block, grid=grid)
+    cuda.Context.synchronize()
     
     cuda.memcpy_dtoh(result, result_gpu)
     result = result.reshape((height, width, channels)).astype(np.uint8)
