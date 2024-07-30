@@ -1,4 +1,4 @@
-# CEPARCO Group 6 Intergrating Project
+# CEPARCO Group 6 Integrating Project
 
 PyCUDA Installation Video: https://www.youtube.com/watch?v=WVF1OcSXfMA
 
